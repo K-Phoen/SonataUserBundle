@@ -49,7 +49,9 @@ class SonataUserExtension extends Extension
 
         $config = $this->addDefaults($config);
 
-        $this->registerDoctrineMapping($config);
+        if ($config['manager_type'] !== 'propel') {
+            $this->registerDoctrineMapping($config);
+        }
         $this->configureAdminClass($config, $container);
         $this->configureClass($config, $container);
 
@@ -139,6 +141,8 @@ class SonataUserExtension extends Extension
             $modelType = 'Entity';
         } elseif ('mongodb' === $config['manager_type']) {
             $modelType = 'Document';
+        } elseif ('propel' === $config['manager_type']) {
+            $modelType = 'Model';
         }
 
         $defaultConfig['class']['user']  = sprintf('Application\\Sonata\\UserBundle\\%s\\User', $modelType);
@@ -162,6 +166,8 @@ class SonataUserExtension extends Extension
             $modelType = 'entity';
         } elseif ('mongodb' === $config['manager_type']) {
             $modelType = 'document';
+        } elseif ('propel' === $config['manager_type']) {
+            $modelType = 'model';
         }
 
         $container->setParameter(sprintf('sonata.user.admin.user.%s', $modelType), $config['class']['user']);

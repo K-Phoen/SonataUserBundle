@@ -28,7 +28,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('sonata_user');
 
-        $supportedManagerTypes = array('orm', 'mongodb');
+        $supportedManagerTypes = array('orm', 'mongodb', 'propel');
 
         $rootNode
             ->children()
