@@ -51,7 +51,10 @@ class SonataUserExtension extends Extension
 
         if ($config['manager_type'] !== 'propel') {
             $this->registerDoctrineMapping($config);
+        } else {
+            $loader->load('propel/services.xml');
         }
+
         $this->configureAdminClass($config, $container);
         $this->configureClass($config, $container);
 
@@ -142,11 +145,16 @@ class SonataUserExtension extends Extension
         } elseif ('mongodb' === $config['manager_type']) {
             $modelType = 'Document';
         } elseif ('propel' === $config['manager_type']) {
-            $modelType = 'Model';
+            $modelType = 'Propel';
         }
 
-        $defaultConfig['class']['user']  = sprintf('Application\\Sonata\\UserBundle\\%s\\User', $modelType);
-        $defaultConfig['class']['group'] = sprintf('Application\\Sonata\\UserBundle\\%s\\Group', $modelType);
+        if ('propel' === $config['manager_type']) {
+            $defaultConfig['class']['user']  = 'Sonata\UserBundle\Propel\User';
+            $defaultConfig['class']['group']  = 'Sonata\UserBundle\Propel\Group';
+        } else {
+            $defaultConfig['class']['user']  = sprintf('Application\\Sonata\\UserBundle\\%s\\User', $modelType);
+            $defaultConfig['class']['group'] = sprintf('Application\\Sonata\\UserBundle\\%s\\Group', $modelType);
+        }
 
         $defaultConfig['admin']['user']['class']  = sprintf('Sonata\\UserBundle\\Admin\\%s\\UserAdmin', $modelType);
         $defaultConfig['admin']['group']['class'] = sprintf('Sonata\\UserBundle\\Admin\\%s\\GroupAdmin', $modelType);
@@ -167,7 +175,7 @@ class SonataUserExtension extends Extension
         } elseif ('mongodb' === $config['manager_type']) {
             $modelType = 'document';
         } elseif ('propel' === $config['manager_type']) {
-            $modelType = 'model';
+            $modelType = 'propel';
         }
 
         $container->setParameter(sprintf('sonata.user.admin.user.%s', $modelType), $config['class']['user']);
