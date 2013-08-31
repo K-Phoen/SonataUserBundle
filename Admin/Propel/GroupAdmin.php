@@ -25,21 +25,13 @@ class GroupAdmin extends Admin
     /**
      * {@inheritdoc}
      */
-    public function getNewInstance()
-    {
-        $class = $this->getClass();
-
-        return new $class('', array());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
             ->addIdentifier('name')
-            ->add('roles')
+            ->add('rolesAsString', null, array(
+                'label' => $this->getLabelTranslatorStrategy()->getLabel('roles', 'list', 'label')
+            ))
         ;
     }
 
