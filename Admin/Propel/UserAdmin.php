@@ -57,7 +57,9 @@ class UserAdmin extends Admin
             ->add('username')
             ->add('locked')
             ->add('email')
-            //->add('groups')
+            ->add('group', null, array(
+                'label' => $this->getLabelTranslatorStrategy()->getLabel('groups', 'list', 'label')
+            ))
         ;
     }
 
