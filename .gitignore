@@ -7,3 +7,5 @@ nbproject
 coverage
 composer.lock
 vendor
+Propel/map
+Propel/om

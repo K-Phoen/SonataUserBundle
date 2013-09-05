@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="default" namespace="Sonata\UserBundle\Propel" defaultIdMethod="native">
+
+    <table name="fos_user" phpName="User">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="username" type="varchar" size="255" primaryString="true" />
+        <column name="username_canonical" type="varchar" size="255" />
+        <unique>
+            <unique-column name="username_canonical" />
+        </unique>
+
+        <column name="email" type="varchar" size="255" />
+        <column name="email_canonical" type="varchar" size="255" />
+        <unique>
+            <unique-column name="email_canonical" />
+        </unique>
+
+        <column name="enabled" type="boolean" defaultValue="false" />
+        <column name="salt" type="varchar" size="255" required="true" />
+        <column name="password" type="varchar" size="255" required="true" />
+        <column name="last_login" type="timestamp" required="false" />
+        <column name="locked" type="boolean" defaultValue="false" />
+        <column name="expired" type="boolean" defaultValue="false" />
+        <column name="expires_at" type="timestamp" required="false" />
+        <column name="confirmation_token" type="varchar" size="255" required="false" />
+        <column name="password_requested_at" type="timestamp" required="false" />
+        <column name="credentials_expired" type="boolean" defaultValue="false" />
+        <column name="credentials_expire_at" type="timestamp" required="false" />
+        <column name="roles" type="array" />
+
+        <behavior name="typehintable">
+            <parameter name="last_login" value="DateTime" />
+            <parameter name="password_requested_at" value="DateTime" />
+            <parameter name="roles" value="array" />
+            <parameter name="fos_group" value="FOS\UserBundle\Model\GroupInterface" />
+
+            <parameter name="nullable_columns" value="password_requested_at" />
+        </behavior>
+
+        <!-- SonataUserBundle additions -->
+
+        <!-- Profile columns -->
+        <column phpName="DateOfBirth"  type="timestamp"   name="date_of_birth"           required="false" />
+        <column phpName="Firstname"    type="varchar"     name="firstname" size="64"     required="false" />
+        <column phpName="Lastname"     type="varchar"     name="lastname"  size="64"     required="false" />
+        <column phpName="Website"      type="varchar"     name="website"   size="64"     required="false" />
+        <column phpName="Biography"    type="varchar"     name="biography" size="255"    required="false" />
+        <column phpName="Gender"       type="varchar"     name="gender"    size="1"      required="false" />
+        <column phpName="Locale"       type="varchar"     name="locale"    size="8"      required="false" />
+        <column phpName="Timezone"     type="varchar"     name="timezone"  size="64"     required="false" />
+        <column phpName="Phone"        type="varchar"     name="phone"     size="64"     required="false" />
+
+        <!-- social columns -->
+        <column phpName="FacebookUid"     type="varchar"    name="facebook_uid"     size="255"  required="false" />
+        <column phpName="FacebookName"    type="varchar"    name="facebook_name"    size="255"  required="false" />
+        <column phpName="FacebookData"    type="array"      name="facebook_data"                required="false" />
+        <column phpName="TwitterUid"      type="varchar"    name="twitter_uid"      size="255"  required="false" />
+        <column phpName="TwitterName"     type="varchar"    name="twitter_name"     size="255"  required="false" />
+        <column phpName="TwitterData"     type="array"      name="twitter_data"                 required="false" />
+        <column phpName="GplusUid"        type="varchar"    name="gplus_uid"        size="255"  required="false" />
+        <column phpName="GplusName"       type="varchar"    name="gplus_name"       size="255"  required="false" />
+        <column phpName="GplusData"       type="array"      name="gplus_data"                   required="false" />
+
+        <!-- extra security columns -->
+        <column phpName="Token"                   type="varchar" size="255" name="token" required="false" />
+        <column phpName="TwoStepVerificationCode" type="varchar" size="255" name="two_step_code" required="false" />
+
+        <behavior name="timestampable" />
+    </table>
+
+    <table name="fos_group" phpName="Group">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="name" type="varchar" size="255" required="true" primaryString="true" />
+        <column name="roles" type="array" />
+
+        <behavior name="typehintable">
+            <parameter name="roles" value="array" />
+        </behavior>
+    </table>
+
+    <table name="fos_user_group" phpName="UserGroup" isCrossRef="true">
+        <column name="fos_user_id" type="integer" required="true" primaryKey="true" />
+        <column name="fos_group_id" type="integer" required="true" primaryKey="true" />
+        <foreign-key foreignTable="fos_user">
+            <reference local="fos_user_id" foreign="id" />
+        </foreign-key>
+
+        <foreign-key foreignTable="fos_group">
+            <reference local="fos_group_id" foreign="id" />
+        </foreign-key>
+    </table>
+</database>

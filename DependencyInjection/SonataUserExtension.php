@@ -43,13 +43,16 @@ class SonataUserExtension extends Extension
         $loader->load('google_authenticator.xml');
         $loader->load('twig.xml');
 
+
         if ($config['security_acl']) {
             $loader->load('security_acl.xml');
         }
 
         $config = $this->addDefaults($config);
 
-        $this->registerDoctrineMapping($config);
+        if ($config['manager_type'] !== 'propel') {
+            $this->registerDoctrineMapping($config);
+        }
         $this->configureAdminClass($config, $container);
         $this->configureClass($config, $container);
 
@@ -139,10 +142,17 @@ class SonataUserExtension extends Extension
             $modelType = 'Entity';
         } elseif ('mongodb' === $config['manager_type']) {
             $modelType = 'Document';
+        } elseif ('propel' === $config['manager_type']) {
+            $modelType = 'Propel';
         }
 
-        $defaultConfig['class']['user']  = sprintf('Application\\Sonata\\UserBundle\\%s\\User', $modelType);
-        $defaultConfig['class']['group'] = sprintf('Application\\Sonata\\UserBundle\\%s\\Group', $modelType);
+        if ('propel' === $config['manager_type']) {
+            $defaultConfig['class']['user']  = 'Sonata\UserBundle\Propel\User';
+            $defaultConfig['class']['group']  = 'Sonata\UserBundle\Propel\Group';
+        } else {
+            $defaultConfig['class']['user']  = sprintf('Application\\Sonata\\UserBundle\\%s\\User', $modelType);
+            $defaultConfig['class']['group'] = sprintf('Application\\Sonata\\UserBundle\\%s\\Group', $modelType);
+        }
 
         $defaultConfig['admin']['user']['class']  = sprintf('Sonata\\UserBundle\\Admin\\%s\\UserAdmin', $modelType);
         $defaultConfig['admin']['group']['class'] = sprintf('Sonata\\UserBundle\\Admin\\%s\\GroupAdmin', $modelType);
@@ -162,6 +172,8 @@ class SonataUserExtension extends Extension
             $modelType = 'entity';
         } elseif ('mongodb' === $config['manager_type']) {
             $modelType = 'document';
+        } elseif ('propel' === $config['manager_type']) {
+            $modelType = 'propel';
         }
 
         $container->setParameter(sprintf('sonata.user.admin.user.%s', $modelType), $config['class']['user']);
