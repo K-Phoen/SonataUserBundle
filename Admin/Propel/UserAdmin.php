@@ -114,7 +114,7 @@ class UserAdmin extends Admin
                 ->add('plainPassword', 'text', array('required' => false))
             ->end()
             ->with('Groups')
-                ->add('groups', 'sonata_type_model', array('required' => false, 'expanded' => true, 'multiple' => true))
+                ->add('groups', 'sonata_type_model', array('required' => false, 'expanded' => true, 'multiple' => true, 'by_reference' => false))
             ->end()
             ->with('Profile')
                 ->add('dateOfBirth', 'birthday', array('required' => false))
